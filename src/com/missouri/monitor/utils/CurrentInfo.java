@@ -15,12 +15,7 @@ public class CurrentInfo {
 	private final static Logger log = Logger.getLogger(CurrentInfo.class);
 
 	private static final String BUILD_MODEL = Build.MODEL.toLowerCase(Locale.ENGLISH);
-	private static final String I_MBAT = "I_MBAT: ";
-	private static final String CURRENT_NOW = "/sys/class/power_supply/battery/current_now";
-	private static final String BATT_CURRENT = "/sys/class/power_supply/battery/batt_current";
-	private static final String SMEM_TEXT = "/sys/class/power_supply/battery/smem_text";
-	private static final String BATT_CURRENT_ADC = "/sys/class/power_supply/battery/batt_current_adc";
-	private static final String CURRENT_AVG = "/sys/class/power_supply/battery/current_avg";
+
 
 	/**
 	 * read system file to get current value
@@ -34,7 +29,7 @@ public class CurrentInfo {
 		if (BUILD_MODEL.contains("sgh-i337") || BUILD_MODEL.contains("gt-i9505") || BUILD_MODEL.contains("sch-i545")
 				|| BUILD_MODEL.contains("find 5") || BUILD_MODEL.contains("sgh-m919") || BUILD_MODEL.contains("sgh-i537")
 				|| BUILD_MODEL.contains("x907") || BUILD_MODEL.contains("gt-n7100")) {
-			f = new File(CURRENT_NOW);
+			f = new File(Utils.Current.CURRENT_NOW);
 			if (f.exists()) {
 				return getCurrentValue(f, false);
 			}
@@ -42,7 +37,7 @@ public class CurrentInfo {
 
 		// samsung galaxy
 		if (BUILD_MODEL.contains("gt-p31") || BUILD_MODEL.contains("gt-p51")) {
-			f = new File(CURRENT_AVG);
+			f = new File(Utils.Current.CURRENT_AVG);
 			if (f.exists()) {
 				return getCurrentValue(f, false);
 			}
@@ -50,32 +45,32 @@ public class CurrentInfo {
 
 		// htc desire hd ,desire z
 		if (BUILD_MODEL.contains("desire hd") || BUILD_MODEL.contains("desire z")) {
-			f = new File(BATT_CURRENT);
+			f = new File(Utils.Current.BATT_CURRENT);
 			if (f.exists()) {
 				return getCurrentValue(f, false);
 			}
 		}
 
 		// htc sensation z710e
-		f = new File(BATT_CURRENT);
+		f = new File(Utils.Current.BATT_CURRENT);
 		if (f.exists()) {
 			return getCurrentValue(f, false);
 		}
 
 		// htc one V
-		f = new File(SMEM_TEXT);
+		f = new File(Utils.Current.SMEM_TEXT);
 		if (f.exists()) {
 			return getSMemValue();
 		}
 
 		// nexus one,meizu
-		f = new File(CURRENT_NOW);
+		f = new File(Utils.Current.CURRENT_NOW);
 		if (f.exists()) {
 			return getCurrentValue(f, true);
 		}
 
 		// galaxy note, galaxy s2
-		f = new File(BATT_CURRENT_ADC);
+		f = new File(Utils.Current.BATT_CURRENT_ADC);
 		if (f.exists()) {
 			return getCurrentValue(f, false);
 		}
@@ -105,12 +100,12 @@ public class CurrentInfo {
 		String text = null;
 		Long value = null;
 		try {
-			FileReader fr = new FileReader(SMEM_TEXT);
+			FileReader fr = new FileReader(Utils.Current.SMEM_TEXT);
 			BufferedReader br = new BufferedReader(fr);
 			String line = br.readLine();
 			while (line != null) {
-				if (line.contains(I_MBAT)) {
-					text = line.substring(line.indexOf(I_MBAT) + 8);
+				if (line.contains(Utils.Current.I_MBAT)) {
+					text = line.substring(line.indexOf(Utils.Current.I_MBAT) + 8);
 					success = true;
 					break;
 				}

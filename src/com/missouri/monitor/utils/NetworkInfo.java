@@ -29,8 +29,8 @@ public class NetworkInfo {
 	public long getNetworkInfo() {
 		log.i("get traffic information");
 		RandomAccessFile rafRcv = null, rafSnd = null;
-		String rcvPath = "/proc/uid_stat/" + uid + "/tcp_rcv";
-		String sndPath = "/proc/uid_stat/" + uid + "/tcp_snd";
+		String rcvPath = Utils.Network.PROC_UID_PATH + uid + Utils.Network.TCP_RCV;
+		String sndPath = Utils.Network.PROC_UID_PATH + uid + Utils.Network.TCP_SND;
 		long rcvTraffic = -1;
 		long sndTraffic = -1;
 		try {

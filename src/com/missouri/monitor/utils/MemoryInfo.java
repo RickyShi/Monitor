@@ -24,7 +24,7 @@ public class MemoryInfo {
 		String memTotal = "";
 		long memory = 0;
 		try {
-			FileReader fr = new FileReader(Utils.MEMORY_INFO_PATH);
+			FileReader fr = new FileReader(Utils.Memory.MEMORY_INFO_PATH);
 			BufferedReader localBufferedReader = new BufferedReader(fr, 8192);
 			while ((readTemp = localBufferedReader.readLine()) != null) {
 				// file looks like
