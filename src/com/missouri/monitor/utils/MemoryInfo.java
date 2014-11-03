@@ -20,14 +20,15 @@ public class MemoryInfo {
 	 * @return total memory of device
 	 */
 	public long getTotalMemory() {
-		String memInfoPath = "/proc/meminfo";
 		String readTemp = "";
 		String memTotal = "";
 		long memory = 0;
 		try {
-			FileReader fr = new FileReader(memInfoPath);
+			FileReader fr = new FileReader(Utils.MEMORY_INFO_PATH);
 			BufferedReader localBufferedReader = new BufferedReader(fr, 8192);
 			while ((readTemp = localBufferedReader.readLine()) != null) {
+				// file looks like
+				// MemTotal: 94096 kB
 				if (readTemp.contains("MemTotal")) {
 					String[] total = readTemp.split(":");
 					memTotal = total[1].trim();
@@ -45,7 +46,7 @@ public class MemoryInfo {
 	}
 
 	/**
-	 * get free memory.
+	 * get free memory.(MB)
 	 *
 	 * @return free memory of device
 	 *
