@@ -5,11 +5,12 @@ import android.graphics.drawable.Drawable;
 /**
  * details of installed processes ,including
  * icon,packagename,pid,uid,processname
- * 
+ *
  * @author Ricky
- * 
+ *
  */
 public class Programs implements Comparable<Programs> {
+	// private final static Logger log = Logger.getLogger(Programs.class);
 	private Drawable icon;
 	private String processName;
 	private String packageName;
