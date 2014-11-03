@@ -29,7 +29,7 @@ public class CurrentInfo {
 		if (BUILD_MODEL.contains("sgh-i337") || BUILD_MODEL.contains("gt-i9505") || BUILD_MODEL.contains("sch-i545")
 				|| BUILD_MODEL.contains("find 5") || BUILD_MODEL.contains("sgh-m919") || BUILD_MODEL.contains("sgh-i537")
 				|| BUILD_MODEL.contains("x907") || BUILD_MODEL.contains("gt-n7100")) {
-			f = new File(Utils.Current.CURRENT_NOW);
+			f = new File(Utils.Current.CURRENT_NOW_PATH);
 			if (f.exists()) {
 				return getCurrentValue(f, false);
 			}
@@ -37,7 +37,7 @@ public class CurrentInfo {
 
 		// samsung galaxy
 		if (BUILD_MODEL.contains("gt-p31") || BUILD_MODEL.contains("gt-p51")) {
-			f = new File(Utils.Current.CURRENT_AVG);
+			f = new File(Utils.Current.CURRENT_AVG_PATH);
 			if (f.exists()) {
 				return getCurrentValue(f, false);
 			}
@@ -45,32 +45,32 @@ public class CurrentInfo {
 
 		// htc desire hd ,desire z
 		if (BUILD_MODEL.contains("desire hd") || BUILD_MODEL.contains("desire z")) {
-			f = new File(Utils.Current.BATT_CURRENT);
+			f = new File(Utils.Current.BATT_CURRENT_PATH);
 			if (f.exists()) {
 				return getCurrentValue(f, false);
 			}
 		}
 
 		// htc sensation z710e
-		f = new File(Utils.Current.BATT_CURRENT);
+		f = new File(Utils.Current.BATT_CURRENT_PATH);
 		if (f.exists()) {
 			return getCurrentValue(f, false);
 		}
 
 		// htc one V
-		f = new File(Utils.Current.SMEM_TEXT);
+		f = new File(Utils.Current.SMEM_TEXT_PATH);
 		if (f.exists()) {
 			return getSMemValue();
 		}
 
 		// nexus one,meizu
-		f = new File(Utils.Current.CURRENT_NOW);
+		f = new File(Utils.Current.CURRENT_NOW_PATH);
 		if (f.exists()) {
 			return getCurrentValue(f, true);
 		}
 
 		// galaxy note, galaxy s2
-		f = new File(Utils.Current.BATT_CURRENT_ADC);
+		f = new File(Utils.Current.BATT_CURRENT_ADC_PATH);
 		if (f.exists()) {
 			return getCurrentValue(f, false);
 		}
@@ -100,7 +100,7 @@ public class CurrentInfo {
 		String text = null;
 		Long value = null;
 		try {
-			FileReader fr = new FileReader(Utils.Current.SMEM_TEXT);
+			FileReader fr = new FileReader(Utils.Current.SMEM_TEXT_PATH);
 			BufferedReader br = new BufferedReader(fr);
 			String line = br.readLine();
 			while (line != null) {
