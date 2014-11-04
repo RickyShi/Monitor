@@ -58,7 +58,7 @@ public class CpuInfo {
 	 */
 	public void readCpuStat() {
 		String processPid = Integer.toString(pid);
-		String cpuStatPath = "/proc/" + processPid + "/stat";
+		String cpuStatPath = Utils.PROC_PATH + processPid + Utils.STAT_PATH;
 		try {
 			// monitor cpu stat of certain process
 			RandomAccessFile processCpuInfo = new RandomAccessFile(cpuStatPath, "r");
@@ -92,7 +92,7 @@ public class CpuInfo {
 				String[] toks = line.split("\\s+");
 				idleCpu.add(Long.parseLong(toks[4]));
 				totalCpu.add(Long.parseLong(toks[1]) + Long.parseLong(toks[2]) + Long.parseLong(toks[3]) + Long.parseLong(toks[4])
-						+ Long.parseLong(toks[6]) + Long.parseLong(toks[5]) + Long.parseLong(toks[7]));
+						+ Long.parseLong(toks[5]) + Long.parseLong(toks[6]) + Long.parseLong(toks[7]));
 			}
 			cpuInfo.close();
 		} catch (FileNotFoundException e) {
@@ -166,9 +166,9 @@ public class CpuInfo {
 	}
 
 	/**
-	 * get CPU core list
+	 * get CPU core list (name)
 	 *
-	 * @return cpu core list
+	 * @return cpu core list (name)
 	 */
 	public ArrayList<String> getCpuList() {
 		ArrayList<String> cpuList = new ArrayList<String>();
@@ -197,10 +197,10 @@ public class CpuInfo {
 	 */
 	public ArrayList<String> getCpuRatioInfo(String totalBatt, String currentBatt, String temperature, String voltage) {
 
-		DecimalFormat fomart = new DecimalFormat();
-		fomart.setGroupingUsed(false);
-		fomart.setMaximumFractionDigits(2);
-		fomart.setMinimumFractionDigits(2);
+		DecimalFormat format = new DecimalFormat();
+		format.setGroupingUsed(false);
+		format.setMaximumFractionDigits(2);
+		format.setMinimumFractionDigits(2);
 
 		cpuUsedRatio.clear();
 		idleCpu.clear();
@@ -213,10 +213,10 @@ public class CpuInfo {
 			Calendar cal = Calendar.getInstance();
 			if ((Build.MODEL.equals("sdk")) || (Build.MODEL.equals("google_sdk"))) {
 				mDateTime2 = formatterFile.format(cal.getTime().getTime() + 8 * 60 * 60 * 1000);
-				totalBatt = Utils.CPU.NA;
-				currentBatt = Utils.CPU.NA;
-				temperature = Utils.CPU.NA;
-				voltage = Utils.CPU.NA;
+				totalBatt = Utils.NA;
+				currentBatt = Utils.NA;
+				temperature = Utils.NA;
+				voltage = Utils.NA;
 			} else {
 				mDateTime2 = formatterFile.format(cal.getTime().getTime());
 			}
@@ -228,15 +228,16 @@ public class CpuInfo {
 				if (initialNetwork == -1) {
 					Network = -1;
 				} else {
+					// byte to kb
 					Network = (lastestNetwork - initialNetwork + 1023) / 1024;
 				}
 				StringBuffer totalCpuBuffer = new StringBuffer();
 				if (null != totalCpu2 && totalCpu2.size() > 0) {
-					processCpuRatio = fomart.format(100 * ((double) (processCpu - processCpu2) / ((double) (totalCpu.get(0) - totalCpu2.get(0)))));
+					processCpuRatio = format.format(100 * ((double) (processCpu - processCpu2) / ((double) (totalCpu.get(0) - totalCpu2.get(0)))));
 					for (int i = 0; i < (totalCpu.size() > totalCpu2.size() ? totalCpu2.size() : totalCpu.size()); i++) {
 						String cpuRatio = "0.00";
 						if (totalCpu.get(i) - totalCpu2.get(i) > 0) {
-							cpuRatio = fomart
+							cpuRatio = format
 									.format(100 * ((double) ((totalCpu.get(i) - idleCpu.get(i)) - (totalCpu2.get(i) - idleCpu2.get(i))) / (double) (totalCpu
 											.get(i) - totalCpu2.get(i))));
 						}
@@ -256,19 +257,19 @@ public class CpuInfo {
 					totalCpuBuffer.append("0.00,");
 				}
 				long pidMemory = mi.getPidMemorySize(pid, context);
-				String pMemory = fomart.format((double) pidMemory / 1024);
+				String pMemory = format.format((double) pidMemory / 1024);
 				long freeMemory = mi.getFreeMemorySize(context);
-				String fMemory = fomart.format((double) freeMemory / 1024);
+				String fMemory = format.format((double) freeMemory / 1024);
 				String percent = context.getString(R.string.stat_error);
 				if (totalMemorySize != 0) {
-					percent = fomart.format(((double) pidMemory / (double) totalMemorySize) * 100);
+					percent = format.format(((double) pidMemory / (double) totalMemorySize) * 100);
 				}
 
 				if (isPositive(processCpuRatio) && isPositive(totalCpuRatio.get(0))) {
 					String trafValue;
 					// whether certain device supports Network statics or not
 					if (Network == -1) {
-						trafValue = Utils.CPU.NA;
+						trafValue = Utils.NA;
 					} else {
 						trafValue = String.valueOf(Network);
 					}

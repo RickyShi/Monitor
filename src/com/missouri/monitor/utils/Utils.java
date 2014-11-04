@@ -3,6 +3,10 @@ package com.missouri.monitor.utils;
 public class Utils {
 	public static final String MONITOR_PACKAGE_NAME = "com.missouri.monitor";
 	public static final String COMMA = ",";
+	public static final String NA = "N/A";
+
+	public static final String PROC_PATH = "/proc/";
+	public static final String STAT_PATH = "/stat";
 
 	public class Memory {
 		public static final String MEMORY_INFO_PATH = "/proc/meminfo";
@@ -29,6 +33,6 @@ public class Utils {
 		public static final String CPU_X86 = "x86";
 		public static final String CPU_INFO_PATH = "/proc/cpuinfo";
 		public static final String CPU_STAT_PATH = "/proc/stat";
-		public static final String NA = "N/A";
 	}
+
 }
