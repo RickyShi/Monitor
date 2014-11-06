@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
 					}
 				} else {
 					btnTest.setText(getString(R.string.start_test));
-					Toast.makeText(MainActivity.this, getString(R.string.test_result_file_toast) + MonitorService.resultFilePath,
+					Toast.makeText(MainActivity.this, getString(R.string.test_result_file_toast) + Utils.FILE_PATH + MonitorService.fileName,
 							Toast.LENGTH_LONG).show();
 					stopService(monitorService);
 				}
@@ -124,7 +124,7 @@ public class MainActivity extends Activity {
 
 	/**
 	 * customized BroadcastReceiver
-	 * 
+	 *
 	 * @author Ricky
 	 */
 	public class UpdateReceiver extends BroadcastReceiver {

@@ -9,9 +9,20 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 
 import com.missouri.monitor.MonitorService;
@@ -179,9 +190,16 @@ public class CpuInfo {
 			File dir = new File(Utils.CPU.CPU_DIR_PATH);
 			// Filter to only list the devices we care about
 			File[] files = dir.listFiles(new CpuFilter());
+			/**
+			 * The code below get all the cpu value
+			 */
 			for (int i = 0; i < files.length; i++) {
 				cpuList.add(files[i].getName());
 			}
+			/**
+			 * The code below just get the overall cpu value
+			 */
+			// cpuList.add(files[0].getName());
 			return cpuList;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -239,9 +257,7 @@ public class CpuInfo {
 					for (int i = 0; i < (totalCpu.size() > totalCpu2.size() ? totalCpu2.size() : totalCpu.size()); i++) {
 						String cpuRatio = "0.00";
 						if (totalCpu.get(i) - totalCpu2.get(i) > 0) {
-							cpuRatio = format
-									.format(100 * ((double) ((totalCpu.get(i) - idleCpu.get(i)) - (totalCpu2.get(i) - idleCpu2.get(i))) / (double) (totalCpu
-											.get(i) - totalCpu2.get(i))));
+							cpuRatio = format.format(100 * ((double) ((totalCpu.get(i) - idleCpu.get(i)) - (totalCpu2.get(i) - idleCpu2.get(i))) / (double) (totalCpu.get(i) - totalCpu2.get(i))));
 						}
 						totalCpuRatio.add(cpuRatio);
 						totalCpuBuffer.append(cpuRatio + Utils.COMMA);
@@ -275,9 +291,12 @@ public class CpuInfo {
 					} else {
 						trafValue = String.valueOf(Network);
 					}
-					MonitorService.bw.write(mDateTime2 + Utils.COMMA + pMemory + Utils.COMMA + percent + Utils.COMMA + fMemory + Utils.COMMA + processCpuRatio + Utils.COMMA
-							+ totalCpuBuffer.toString() + trafValue + Utils.COMMA + totalBatt + Utils.COMMA + currentBatt + Utils.COMMA + temperature + Utils.COMMA + voltage
-							+ "\r\n");
+					String oneRecord = getTimeStamp() + Utils.COMMA + trafValue + Utils.COMMA + totalBatt + Utils.COMMA + currentBatt + Utils.COMMA + temperature + Utils.COMMA + voltage + Utils.COMMA + pMemory + Utils.COMMA + percent + Utils.COMMA + fMemory + Utils.COMMA + processCpuRatio + Utils.COMMA
+							+ totalCpuBuffer.toString() + "\r\n";
+					log.d(oneRecord);
+					Utils.writeToFile(MonitorService.fileName, oneRecord);
+					TransmitData transmitData = new TransmitData();
+					transmitData.execute(MonitorService.fileName, oneRecord + ";");
 					totalCpu2 = (ArrayList<Long>) totalCpu.clone();
 					processCpu2 = processCpu;
 					idleCpu2 = (ArrayList<Long>) idleCpu.clone();
@@ -306,5 +325,46 @@ public class CpuInfo {
 			return false;
 		}
 		return num >= 0;
+	}
+
+	public String getTimeStamp() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeZone(TimeZone.getTimeZone("US/Central"));
+		return String.valueOf(cal.getTime());
+	}
+
+	private class TransmitData extends AsyncTask<String, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(String... strings) {
+			String fileName = strings[0];
+			String dataToSend = strings[1];
+			if (Utils.checkDataConnectivity(context)) {
+				HttpPost request = new HttpPost(Utils.UPLOAD_ADDRESS);
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				// file_name
+				params.add(new BasicNameValuePair("file_name", fileName));
+				// data
+				params.add(new BasicNameValuePair("data", dataToSend));
+				try {
+
+					request.setEntity(new UrlEncodedFormEntity(params,HTTP.UTF_8));
+					HttpResponse response = new DefaultHttpClient().execute(request);
+					// if (response.getStatusLine().getStatusCode() == 200) {
+					// String result =
+					// EntityUtils.toString(response.getEntity());
+						// Log.d("Sensor Data Point Info", result);
+					// }
+					return true;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			else {
+				log.d("No Network Connection:Data Point was not uploaded");
+				return false;
+			}
+		}
 	}
 }

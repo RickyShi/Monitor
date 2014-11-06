@@ -1,5 +1,9 @@
 package com.missouri.monitor.utils;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,6 +19,7 @@ public class Utils {
 
 	public static final String PROC_PATH = "/proc/";
 	public static final String STAT_PATH = "/stat";
+	public static final String FILE_PATH = "sdcard/monitor/";
 
 	public static final int TIMEOUT = 20000;
 	// default MONITOR_INTERVAL is set to 5s
@@ -80,6 +85,19 @@ public class Utils {
 			}
 		}
 		return false;
+	}
+
+	public static void writeToFile(String fileName, String toWrite) throws IOException {
+		File dir = new File(FILE_PATH);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		File f = new File(FILE_PATH, fileName);
+		FileWriter fw = new FileWriter(f, true);
+		fw.write(toWrite + '\n');
+		fw.flush();
+		fw.close();
+		f = null;
 	}
 
 }
