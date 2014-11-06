@@ -81,23 +81,4 @@ public class MemoryInfo {
 		return memSize;
 	}
 
-	/**
-	 * get the sdk version of phone.
-	 *
-	 * @return sdk version
-	 */
-	public String getSDKVersion() {
-		log.d("SDK: " + android.os.Build.VERSION.RELEASE);
-		return android.os.Build.VERSION.RELEASE;
-	}
-
-	/**
-	 * get phone type.
-	 *
-	 * @return phone type
-	 */
-	public String getPhoneType() {
-		log.d("PhoneMod: " + android.os.Build.MODEL);
-		return android.os.Build.MODEL;
-	}
 }
