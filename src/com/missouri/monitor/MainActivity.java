@@ -29,25 +29,21 @@ import android.widget.Toast;
 import com.missouri.monitor.logger.Logger;
 import com.missouri.monitor.utils.ProcessInfo;
 import com.missouri.monitor.utils.Programs;
+import com.missouri.monitor.utils.Utils;
 
 public class MainActivity extends Activity {
 	private final static Logger log = Logger.getLogger(MainActivity.class);
 
-	private static final int TIMEOUT = 20000;
-
 	private List<Programs> processList;
 	private ProcessInfo processInfo;
 	private Intent monitorService;
-	private ListView lstViProgramme;
+	private ListView lstViProgram;
 	private Button btnTest;
 	private int pid, uid;
 	private boolean isServiceStop = false;
 	private UpdateReceiver receiver;
 
 	private TextView nbTitle;
-	private ImageView ivGoBack;
-	private ImageView ivBtnSet;
-	private LinearLayout layBtnSet;
 	private Long mExitTime = (long) 0;
 
 	@Override
@@ -62,9 +58,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				monitorService = new Intent();
-				monitorService.setClass(MainActivity.this, EmmageeService.class);
+				monitorService.setClass(MainActivity.this, MonitorService.class);
 				if (getString(R.string.start_test).equals(btnTest.getText().toString())) {
-					ListAdapter adapter = (ListAdapter) lstViProgramme.getAdapter();
+					ListAdapter adapter = (ListAdapter) lstViProgram.getAdapter();
 					if (adapter.checkedProg != null) {
 						String packageName = adapter.checkedProg.getPackageName();
 						String processName = adapter.checkedProg.getProcessName();
@@ -94,18 +90,18 @@ public class MainActivity extends Activity {
 						isServiceStop = false;
 						btnTest.setText(getString(R.string.stop_test));
 					} else {
-						Toast.makeText(MainPageMainActivityActivity.this, getString(R.string.choose_app_toast), Toast.LENGTH_LONG).show();
+						Toast.makeText(MainActivity.this, getString(R.string.choose_app_toast), Toast.LENGTH_LONG).show();
 					}
 				} else {
 					btnTest.setText(getString(R.string.start_test));
-					Toast.makeText(MainActivity.this, getString(R.string.test_result_file_toast) + EmmageeService.resultFilePath,
+					Toast.makeText(MainActivity.this, getString(R.string.test_result_file_toast) + MonitorService.resultFilePath,
 							Toast.LENGTH_LONG).show();
 					stopService(monitorService);
 				}
 			}
 		});
-		lstViProgramme.setAdapter(new ListAdapter());
-		lstViProgramme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		lstViProgram.setAdapter(new ListAdapter());
+		lstViProgram.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 				RadioButton rdBtn = (RadioButton) ((LinearLayout) view).getChildAt(0);
@@ -114,33 +110,22 @@ public class MainActivity extends Activity {
 		});
 
 		nbTitle.setText(getString(R.string.app_name));
-		ivGoBack.setVisibility(ImageView.INVISIBLE);
-		ivBtnSet.setImageResource(R.drawable.settings_button);
-		layBtnSet.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				goToSettingsActivity();
-			}
-		});
 		receiver = new UpdateReceiver();
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(EmmageeService.SERVICE_ACTION);
+		filter.addAction(MonitorService.SERVICE_ACTION);
 		registerReceiver(receiver, filter);
 	}
 
 	private void initTitleLayout() {
-		ivGoBack = (ImageView) findViewById(R.id.go_back);
 		nbTitle = (TextView) findViewById(R.id.nb_title);
-		ivBtnSet = (ImageView) findViewById(R.id.btn_set);
-		lstViProgramme = (ListView) findViewById(R.id.processList);
+		lstViProgram = (ListView) findViewById(R.id.processList);
 		btnTest = (Button) findViewById(R.id.test);
-		layBtnSet = (LinearLayout) findViewById(R.id.lay_btn_set);
 	}
 
 	/**
 	 * customized BroadcastReceiver
-	 *
-	 * @author andrewleo
+	 * 
+	 * @author Ricky
 	 */
 	public class UpdateReceiver extends BroadcastReceiver {
 
@@ -178,7 +163,7 @@ public class MainActivity extends Activity {
 		log.d("wait for app start");
 		boolean isProcessStarted = false;
 		long startTime = System.currentTimeMillis();
-		while (System.currentTimeMillis() < startTime + TIMEOUT) {
+		while (System.currentTimeMillis() < startTime + Utils.TIMEOUT) {
 			processList = processInfo.getRunningProcess(getBaseContext());
 			for (Programs Programs : processList) {
 				if ((Programs.getPackageName() != null) && (Programs.getPackageName().equals(packageName))) {
@@ -221,12 +206,6 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
-	}
-
-	private void goToSettingsActivity() {
-		Intent intent = new Intent();
-		intent.setClass(MainActivity.this, SettingsActivity.class);
-		startActivityForResult(intent, Activity.RESULT_FIRST_USER);
 	}
 
 	/**
