@@ -57,6 +57,7 @@ public class MemoryInfo {
 				.getSystemService(Context.ACTIVITY_SERVICE);
 		am.getMemoryInfo(freeMemInfo);
 		long avaliMem = freeMemInfo.availMem;
+		log.d("freeMem: " + avaliMem);
 		return avaliMem / 1024;
 	}
 
@@ -76,6 +77,7 @@ public class MemoryInfo {
 		Debug.MemoryInfo[] memoryInfo = am.getProcessMemoryInfo(myMempid);
 		memoryInfo[0].getTotalSharedDirty();
 		int memSize = memoryInfo[0].getTotalPss();
+		log.d("pidMem: " + memSize);
 		return memSize;
 	}
 
@@ -85,6 +87,7 @@ public class MemoryInfo {
 	 * @return sdk version
 	 */
 	public String getSDKVersion() {
+		log.d("SDK: " + android.os.Build.VERSION.RELEASE);
 		return android.os.Build.VERSION.RELEASE;
 	}
 
@@ -94,6 +97,7 @@ public class MemoryInfo {
 	 * @return phone type
 	 */
 	public String getPhoneType() {
+		log.d("PhoneMod: " + android.os.Build.MODEL);
 		return android.os.Build.MODEL;
 	}
 }

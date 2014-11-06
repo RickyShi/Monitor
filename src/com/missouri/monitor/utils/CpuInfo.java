@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 import android.content.Context;
 import android.os.Build;
 
+import com.missouri.monitor.MonitorService;
+import com.missouri.monitor.R;
 import com.missouri.monitor.logger.Logger;
 
 public class CpuInfo {
@@ -273,7 +275,7 @@ public class CpuInfo {
 					} else {
 						trafValue = String.valueOf(Network);
 					}
-					EmmageeService.bw.write(mDateTime2 + Utils.COMMA + pMemory + Utils.COMMA + percent + Utils.COMMA + fMemory + Utils.COMMA + processCpuRatio + Utils.COMMA
+					MonitorService.bw.write(mDateTime2 + Utils.COMMA + pMemory + Utils.COMMA + percent + Utils.COMMA + fMemory + Utils.COMMA + processCpuRatio + Utils.COMMA
 							+ totalCpuBuffer.toString() + trafValue + Utils.COMMA + totalBatt + Utils.COMMA + currentBatt + Utils.COMMA + temperature + Utils.COMMA + voltage
 							+ "\r\n");
 					totalCpu2 = (ArrayList<Long>) totalCpu.clone();
