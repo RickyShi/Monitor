@@ -76,13 +76,13 @@ public class CurrentInfo {
 		}
 
 		// acer V360
-		f = new File("/sys/class/power_supply/battery/BatteryAverageCurrent");
+		f = new File(Utils.Current.CURRENT_ACER);
 		if (f.exists()) {
 			return getCurrentValue(f, false);
 		}
 
 		// moto milestone,moto mb526
-		f = new File("/sys/devices/platform/cpcap_battery/power_supply/usb/current_now");
+		f = new File(Utils.Current.CURRENT_MOTO);
 		if (f.exists()) {
 			return getCurrentValue(f, false);
 		}

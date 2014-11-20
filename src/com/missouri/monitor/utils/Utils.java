@@ -37,6 +37,8 @@ public class Utils {
 		public static final String SMEM_TEXT_PATH = "/sys/class/power_supply/battery/smem_text";
 		public static final String BATT_CURRENT_ADC_PATH = "/sys/class/power_supply/battery/batt_current_adc";
 		public static final String CURRENT_AVG_PATH = "/sys/class/power_supply/battery/current_avg";
+		public static final String CURRENT_ACER = "/sys/class/power_supply/battery/BatteryAverageCurrent";
+		public static final String CURRENT_MOTO = "/sys/devices/platform/cpcap_battery/power_supply/usb/current_now";
 		public static final String I_MBAT = "I_MBAT: ";
 	}
 
